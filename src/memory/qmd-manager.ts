@@ -253,13 +253,14 @@ export class QmdMemoryManager implements MemorySearchManager {
       this.qmd.limits.maxResults,
       opts?.maxResults ?? this.qmd.limits.maxResults,
     );
-    const args = ["query", trimmed, "--json", "-n", String(limit)];
+    const qmdSearchCommand = this.qmd.searchMode;
+    const args = [qmdSearchCommand, trimmed, "--json", "-n", String(limit)];
     let stdout: string;
     try {
       const result = await this.runQmd(args, { timeoutMs: this.qmd.limits.timeoutMs });
       stdout = result.stdout;
     } catch (err) {
-      log.warn(`qmd query failed: ${String(err)}`);
+      log.warn(`qmd ${qmdSearchCommand} failed: ${String(err)}`);
       throw err instanceof Error ? err : new Error(String(err));
     }
     let parsed: QmdQueryResult[] = [];
@@ -267,8 +268,8 @@ export class QmdMemoryManager implements MemorySearchManager {
       parsed = JSON.parse(stdout);
     } catch (err) {
       const message = err instanceof Error ? err.message : String(err);
-      log.warn(`qmd query returned invalid JSON: ${message}`);
-      throw new Error(`qmd query returned invalid JSON: ${message}`, { cause: err });
+      log.warn(`qmd ${qmdSearchCommand} returned invalid JSON: ${message}`);
+      throw new Error(`qmd ${qmdSearchCommand} returned invalid JSON: ${message}`, { cause: err });
     }
     const results: MemorySearchResult[] = [];
     for (const entry of parsed) {
