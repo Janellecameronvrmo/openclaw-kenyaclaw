@@ -1,0 +1,53 @@
+name: treasury
+version: 1.0.0
+description: Financial treasury management
+
+tools:
+  - name: get_balance
+    description: Get current treasury balance across all accounts
+    parameters:
+      currency:
+        type: string
+        enum: [USD, KES, UGX, TZS, NGN, BTC, ETH]
+        default: USD
+    handler: ./handlers/balance.js
+
+  - name: get_pending_payouts
+    description: Get list of pending payouts to providers
+    parameters:
+      provider:
+        type: string
+        enum: [openrouter, mpesa, paystack, stripe, all]
+        default: all
+    handler: ./handlers/pending-payouts.js
+
+  - name: process_payout
+    description: Process a pending payout
+    parameters:
+      payoutId:
+        type: string
+        required: true
+      approved:
+        type: boolean
+        required: true
+    handler: ./handlers/process-payout.js
+
+  - name: get_margin_report
+    description: Get profit margin report
+    parameters:
+      period:
+        type: string
+        enum: [daily, weekly, monthly]
+        default: weekly
+    handler: ./handlers/margin.js
+
+  - name: set_budget_alert
+    description: Set budget threshold alert
+    parameters:
+      category:
+        type: string
+        required: true
+      threshold:
+        type: number
+        required: true
+    handler: ./handlers/budget-alert.js

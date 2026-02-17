@@ -1,0 +1,54 @@
+name: infrastructure
+version: 1.0.0
+description: Infrastructure management and monitoring
+
+tools:
+  - name: get_system_metrics
+    description: Get current system metrics (CPU, memory, disk)
+    parameters: {}
+    handler: ./handlers/metrics.js
+
+  - name: scale_resources
+    description: Scale infrastructure resources
+    parameters:
+      service:
+        type: string
+        enum: [api, database, redis, openclaw]
+        required: true
+      direction:
+        type: string
+        enum: [up, down]
+        required: true
+      reason:
+        type: string
+        required: true
+    handler: ./handlers/scale.js
+
+  - name: check_service_health
+    description: Check health of services
+    parameters:
+      service:
+        type: string
+        enum: [all, api, postgres, redis, continental, kenyaclaw]
+        default: all
+    handler: ./handlers/health.js
+
+  - name: deploy_update
+    description: Deploy update to production
+    parameters:
+      service:
+        type: string
+        required: true
+      version:
+        type: string
+        required: true
+    handler: ./handlers/deploy.js
+
+  - name: run_security_scan
+    description: Run security vulnerability scan
+    parameters:
+      target:
+        type: string
+        enum: [all, api, dependencies, containers]
+        default: all
+    handler: ./handlers/security-scan.js

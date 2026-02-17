@@ -1,0 +1,49 @@
+name: business-analytics
+version: 1.0.0
+description: Business intelligence and analytics for KenyaClaw
+
+tools:
+  - name: get_mrr
+    description: Get Monthly Recurring Revenue
+    parameters:
+      period:
+        type: string
+        enum: [current, last_month, last_3_months, ytd]
+        default: current
+    handler: ./handlers/mrr.js
+
+  - name: get_churn_rate
+    description: Get customer churn rate
+    parameters:
+      days:
+        type: number
+        default: 30
+    handler: ./handlers/churn.js
+
+  - name: get_customer_growth
+    description: Get customer growth metrics
+    parameters:
+      period:
+        type: string
+        enum: [daily, weekly, monthly]
+        default: weekly
+    handler: ./handlers/growth.js
+
+  - name: get_revenue_by_country
+    description: Breakdown revenue by country
+    parameters:
+      countries:
+        type: array
+        items:
+          type: string
+          enum: [KE, UG, TZ, NG, GH, ZA]
+    handler: ./handlers/revenue-by-country.js
+
+  - name: forecast_revenue
+    description: Forecast revenue for next period
+    parameters:
+      months:
+        type: number
+        default: 3
+        maximum: 12
+    handler: ./handlers/forecast.js
