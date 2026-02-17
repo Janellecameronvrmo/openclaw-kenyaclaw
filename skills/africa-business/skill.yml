@@ -1,0 +1,58 @@
+name: africa-business
+version: 1.0.0
+description: Business tools for African markets
+
+tools:
+  - name: calculate_vat
+    description: Calculate VAT for different African countries
+    parameters:
+      country:
+        type: string
+        enum: [KE, NG, ZA, UG, TZ, GH]
+        required: true
+      amount:
+        type: number
+        required: true
+      vatRate:
+        type: number
+        description: Override default VAT rate
+    handler: ./handlers/vat.js
+
+  - name: format_phone
+    description: Format phone number for country
+    parameters:
+      country:
+        type: string
+        enum: [KE, UG, TZ, NG, GH, ZA]
+        required: true
+      phone:
+        type: string
+        required: true
+    handler: ./handlers/phone-format.js
+
+  - name: business_hours
+    description: Check if business is open
+    parameters:
+      country:
+        type: string
+        required: true
+      day:
+        type: string
+        enum: [monday, tuesday, wednesday, thursday, friday, saturday, sunday]
+    handler: ./handlers/business-hours.js
+
+  - name: currency_convert
+    description: Convert between African currencies
+    parameters:
+      from:
+        type: string
+        enum: [KES, UGX, TZS, NGN, GHS, ZAR]
+        required: true
+      to:
+        type: string
+        enum: [KES, UGX, TZS, NGN, GHS, ZAR, USD]
+        required: true
+      amount:
+        type: number
+        required: true
+    handler: ./handlers/currency.js

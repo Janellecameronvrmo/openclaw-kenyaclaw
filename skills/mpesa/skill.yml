@@ -1,0 +1,57 @@
+name: mpesa
+version: 1.0.0
+description: M-Pesa mobile money integration for Kenya and Tanzania
+
+config:
+  consumerKey: ${MPESA_CONSUMER_KEY}
+  consumerSecret: ${MPESA_CONSUMER_SECRET}
+  passkey: ${MPESA_PASSKEY}
+  shortcode: ${MPESA_SHORTCODE:-174379}
+  environment: ${MPESA_ENV:-sandbox}
+  callbackUrl: https://api.${DOMAIN}/webhooks/mpesa
+
+tools:
+  - name: stk_push
+    description: Send M-Pesa STK push to customer phone
+    parameters:
+      phoneNumber:
+        type: string
+        description: Customer phone number (2547XXXXXXXX format)
+        required: true
+      amount:
+        type: number
+        description: Amount in KES
+        required: true
+        minimum: 1
+      accountReference:
+        type: string
+        description: Payment reference (e.g., Invoice #123)
+        required: true
+        maxLength: 12
+      transactionDesc:
+        type: string
+        description: Description of what is being paid for
+        default: "KenyaClaw Payment"
+    handler: ./handlers/stk-push.js
+
+  - name: check_balance
+    description: Check M-Pesa account balance
+    parameters: {}
+    handler: ./handlers/balance.js
+
+  - name: query_transaction
+    description: Query status of a transaction
+    parameters:
+      checkoutRequestId:
+        type: string
+        description: The checkout request ID from STK push
+        required: true
+    handler: ./handlers/query.js
+
+  - name: validate_phone
+    description: Validate and format phone number
+    parameters:
+      phone:
+        type: string
+        required: true
+    handler: ./handlers/validate-phone.js

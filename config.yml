@@ -1,0 +1,75 @@
+name: KenyaClaw
+description: Multi-tenant AI assistant platform for African businesses
+version: 1.0.0
+
+multiTenant: true
+sessionIsolation: true
+
+gateway:
+  port: 3003
+  host: 0.0.0.0
+  auth:
+    type: api-key
+    validationUrl: http://continental-api:3000/v1/auth/validate
+
+models:
+  default: openai/gpt-4o-mini
+  apiUrl: http://token-proxy:3100/v1
+  
+  routing:
+    byHeader: X-User-Tier
+    tiers:
+      mwanzo:
+        model: openai/gpt-4o-mini
+        maxTokens: 2000
+      safari:
+        model: anthropic/claude-sonnet-4
+        maxTokens: 4000
+      biashara:
+        model: anthropic/claude-opus-4
+        maxTokens: 8000
+      mtaalam:
+        model: anthropic/claude-opus-4
+        maxTokens: 16000
+
+channels:
+  whatsapp:
+    enabled: true
+    businessApiKey: ${WHATSAPP_BUSINESS_API_KEY}
+    phoneNumberId: ${WHATSAPP_PHONE_NUMBER_ID}
+    
+  telegram:
+    enabled: true
+    token: ${TELEGRAM_BOT_TOKEN_KENYACLAW}
+    
+  webchat:
+    enabled: true
+    port: 3004
+
+skills:
+  - type: bundled
+    name: core
+  - type: workspace
+    path: ./skills/mpesa
+  - type: workspace
+    path: ./skills/paystack
+  - type: workspace
+    path: ./skills/africa-business
+  - type: workspace
+    path: ./skills/invoicing
+
+memory:
+  basePath: /memory/customers
+  vectorStore:
+    enabled: true
+    provider: redis
+    url: ${REDIS_URL:-redis://redis:6379}
+
+personas:
+  definitions:
+    - ./agents/mwanzo.yml
+    - ./agents/safari.yml
+
+security:
+  dmPolicy: open
+  rateLimiting: true
