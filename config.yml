@@ -1,75 +1,110 @@
-name: KenyaClaw
-description: Multi-tenant AI assistant platform for African businesses
+name: The Continental
+description: KenyaClaw Management Instance - The High Table (10-Agent Council)
 version: 1.0.0
 
-multiTenant: true
-sessionIsolation: true
-
 gateway:
-  port: 3003
+  port: 3002
   host: 0.0.0.0
-  auth:
-    type: api-key
-    validationUrl: http://continental-api:3000/v1/auth/validate
 
 models:
-  default: openai/gpt-4o-mini
+  default: anthropic/claude-opus-4
   apiUrl: http://token-proxy:3100/v1
+  apiKey: internal-continental
+
+# ============================================
+# THE HIGH TABLE - 10 Agent Council
+# ============================================
+
+agents:
+  definitions:
+    # Executive Leadership (The Inner Circle)
+    - ./agents/winston.yml          # CEO - Strategic leadership
+    - ./agents/john-wick.yml        # CTO - Technical execution
+    - ./agents/adjudicator.yml      # CFO - Financial oversight
+    
+    # Operations (The Service)
+    - ./agents/charon.yml           # CCO - Customer experience
+    - ./agents/doctor.yml           # COO - System health
+    - ./agents/harbourmaster.yml    # CDO - Digital/Platform
+    - ./agents/operator.yml         # CCO - Compliance/Legal
+    
+    # Growth (The Streets)
+    - ./agents/bowery-king.yml      # CMO - Marketing/Growth
+    - ./agents/sofia.yml            # CRO - Sales/Revenue
+    
+    # Wisdom (The High Table)
+    - ./agents/elder.yml            # Advisor - Strategy/Wisdom
   
-  routing:
-    byHeader: X-User-Tier
-    tiers:
-      mwanzo:
-        model: openai/gpt-4o-mini
-        maxTokens: 2000
-      safari:
-        model: anthropic/claude-sonnet-4
-        maxTokens: 4000
-      biashara:
-        model: anthropic/claude-opus-4
-        maxTokens: 8000
-      mtaalam:
-        model: anthropic/claude-opus-4
-        maxTokens: 16000
+  # Council Configuration
+  council:
+    enabled: true
+    quorum: 2
+    votingTimeout: 300000
+    
+    # Decision thresholds
+    autonomy:
+      fullAuto: 100      # <$100: automatic
+      supervised: 1000   # $100-$1K: notify
+      advisory: 10000    # $1K-$10K: recommend
+      strategic: 100000  # >$10K: require approval
+    
+    # Special roles
+    chairman: winston
+    tieBreaker: winston
+    
+    # Emergency powers (Doctor can act immediately on outages)
+    emergency:
+      agent: doctor
+      threshold: critical
+      maxSpend: 500
 
 channels:
-  whatsapp:
+  discord:
     enabled: true
-    businessApiKey: ${WHATSAPP_BUSINESS_API_KEY}
-    phoneNumberId: ${WHATSAPP_PHONE_NUMBER_ID}
+    token: ${DISCORD_BOT_TOKEN}
+    guildId: ${DISCORD_GUILD_ID}
     
+    channels:
+      council:           # All 10 agents
+      executive:         # Winston, John, Adjudicator
+      growth:            # Bowery King, Sofia
+      operations:        # Doctor, Charon
+      web:               # Harbourmaster
+      compliance:        # Operator
+      strategy:          # Elder, Winston
+      sales:             # Sofia
+      customer-success:  # Charon
+      alerts:            # Doctor (critical)
+  
   telegram:
     enabled: true
-    token: ${TELEGRAM_BOT_TOKEN_KENYACLAW}
-    
-  webchat:
-    enabled: true
-    port: 3004
+    token: ${TELEGRAM_BOT_TOKEN_CONTINENTAL}
 
 skills:
   - type: bundled
     name: core
   - type: workspace
-    path: ./skills/mpesa
+    path: ./skills/business-analytics
   - type: workspace
-    path: ./skills/paystack
+    path: ./skills/infrastructure
   - type: workspace
-    path: ./skills/africa-business
+    path: ./skills/treasury
   - type: workspace
-    path: ./skills/invoicing
+    path: ./skills/growth
+  - type: workspace
+    path: ./skills/customer-success
 
 memory:
-  basePath: /memory/customers
+  path: /memory/continental
   vectorStore:
     enabled: true
     provider: redis
     url: ${REDIS_URL:-redis://redis:6379}
 
-personas:
-  definitions:
-    - ./agents/mwanzo.yml
-    - ./agents/safari.yml
-
 security:
-  dmPolicy: open
-  rateLimiting: true
+  dmPolicy: pairing
+
+monitoring:
+  healthCheck:
+    enabled: true
+    interval: 30000
