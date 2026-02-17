@@ -1,0 +1,75 @@
+name: paystack
+version: 1.0.0
+description: Paystack payment integration for Nigeria, Ghana, South Africa
+
+config:
+  secretKey: ${PAYSTACK_SECRET_KEY}
+  publicKey: ${PAYSTACK_PUBLIC_KEY}
+  environment: ${PAYSTACK_ENV:-test}
+  callbackUrl: https://api.${DOMAIN}/webhooks/paystack
+
+tools:
+  - name: initialize_transaction
+    description: Initialize a new payment transaction
+    parameters:
+      email:
+        type: string
+        required: true
+      amount:
+        type: number
+        description: Amount in smallest currency unit (kobo for NGN)
+        required: true
+      currency:
+        type: string
+        enum: [NGN, GHS, ZAR]
+        default: NGN
+      channels:
+        type: array
+        items:
+          type: string
+          enum: [card, bank, ussd, mobile_money, qr]
+        default: [card, bank, ussd]
+      metadata:
+        type: object
+        description: Additional transaction metadata
+    handler: ./handlers/initialize.js
+
+  - name: verify_transaction
+    description: Verify a transaction status
+    parameters:
+      reference:
+        type: string
+        required: true
+    handler: ./handlers/verify.js
+
+  - name: list_transactions
+    description: List all transactions
+    parameters:
+      perPage:
+        type: number
+        default: 50
+      page:
+        type: number
+        default: 1
+    handler: ./handlers/list.js
+
+  - name: create_refund
+    description: Refund a transaction
+    parameters:
+      transaction:
+        type: string
+        required: true
+      amount:
+        type: number
+      reason:
+        type: string
+    handler: ./handlers/refund.js
+
+  - name: get_bank_list
+    description: Get list of supported banks
+    parameters:
+      country:
+        type: string
+        enum: [nigeria, ghana, south_africa]
+        required: true
+    handler: ./handlers/banks.js

@@ -1,0 +1,92 @@
+name: invoicing
+version: 1.0.0
+description: Create and manage invoices for customers
+
+tools:
+  - name: create_invoice
+    description: Create a new invoice
+    parameters:
+      customerName:
+        type: string
+        required: true
+      customerEmail:
+        type: string
+      customerPhone:
+        type: string
+        required: true
+      items:
+        type: array
+        items:
+          type: object
+          properties:
+            description:
+              type: string
+            quantity:
+              type: number
+            unitPrice:
+              type: number
+        required: true
+      currency:
+        type: string
+        enum: [KES, UGX, TZS, NGN, GHS, ZAR, USD]
+        required: true
+      dueDate:
+        type: string
+        format: date
+      notes:
+        type: string
+    handler: ./handlers/create.js
+
+  - name: send_invoice
+    description: Send invoice to customer via WhatsApp/SMS/Email
+    parameters:
+      invoiceId:
+        type: string
+        required: true
+      method:
+        type: string
+        enum: [whatsapp, sms, email]
+        default: whatsapp
+    handler: ./handlers/send.js
+
+  - name: get_invoice_status
+    description: Check payment status of invoice
+    parameters:
+      invoiceId:
+        type: string
+        required: true
+    handler: ./handlers/status.js
+
+  - name: list_invoices
+    description: List all invoices with filters
+    parameters:
+      status:
+        type: string
+        enum: [all, pending, paid, overdue, cancelled]
+        default: all
+      customer:
+        type: string
+      dateFrom:
+        type: string
+        format: date
+      dateTo:
+        type: string
+        format: date
+    handler: ./handlers/list.js
+
+  - name: mark_paid
+    description: Mark invoice as paid (manual payment)
+    parameters:
+      invoiceId:
+        type: string
+        required: true
+      paymentMethod:
+        type: string
+        enum: [cash, bank_transfer, mpesa, other]
+        required: true
+      amount:
+        type: number
+        required: true
+      reference:
+        type: string
+    handler: ./handlers/mark-paid.js

@@ -1,0 +1,34 @@
+name: offline-sync
+version: 1.0.0
+description: Offline message queue and sync for unreliable internet
+
+tools:
+  - name: queue_message
+    description: Queue a message for when back online
+    parameters:
+      message:
+        type: string
+        required: true
+      priority:
+        type: string
+        enum: [low, normal, high]
+        default: normal
+    handler: ./handlers/queue.js
+
+  - name: get_pending_messages
+    description: Get list of messages waiting to be sent
+    parameters: {}
+    handler: ./handlers/pending.js
+
+  - name: sync_data
+    description: Manually trigger sync when back online
+    parameters:
+      force:
+        type: boolean
+        default: false
+    handler: ./handlers/sync.js
+
+  - name: get_sync_status
+    description: Check sync status and last sync time
+    parameters: {}
+    handler: ./handlers/status.js
