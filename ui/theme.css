@@ -1,0 +1,474 @@
+/* ═══════════════════════════════════════════════════════════════════════════
+   THE CONTINENTAL - MANAGEMENT SUITE THEME
+   "Gold Coin Standard" Design System
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+:root {
+  /* Primary Palette */
+  --continental-gold: #D4AF37;
+  --continental-gold-light: #F4D03F;
+  --continental-gold-dark: #B7950B;
+  --blood-oath: #8B0000;
+  --blood-oath-light: #C0392B;
+  --gunmetal: #2C3E50;
+  --gunmetal-light: #34495E;
+  
+  /* Secondary */
+  --ivory: #FFFFF0;
+  --marble: #F5F5F5;
+  --midnight: #191970;
+  --obsidian: #0D0D0D;
+  
+  /* Functional */
+  --success: #27AE60;
+  --warning: #F39C12;
+  --error: var(--blood-oath);
+  --info: #3498DB;
+  
+  /* Typography */
+  --font-display: 'Playfair Display', Georgia, serif;
+  --font-body: 'Inter', -apple-system, sans-serif;
+  --font-mono: 'JetBrains Mono', 'Fira Code', monospace;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   BASE STYLES
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+body {
+  background: linear-gradient(135deg, var(--obsidian) 0%, var(--gunmetal) 100%);
+  color: var(--ivory);
+  font-family: var(--font-body);
+  min-height: 100vh;
+}
+
+/* Gold accent borders */
+.gold-border {
+  border: 1px solid var(--continental-gold);
+  box-shadow: 0 0 10px rgba(212, 175, 55, 0.3),
+              inset 0 0 20px rgba(212, 175, 55, 0.05);
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   COUNCIL CHAMBER - Agent Grid
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+.council-chamber {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 1.5rem;
+  padding: 2rem;
+  background: radial-gradient(ellipse at center, 
+    rgba(212, 175, 55, 0.1) 0%, 
+    transparent 70%);
+}
+
+.agent-card {
+  background: linear-gradient(145deg, 
+    rgba(44, 62, 80, 0.9) 0%, 
+    rgba(13, 13, 13, 0.95) 100%);
+  border: 1px solid var(--continental-gold-dark);
+  border-radius: 8px;
+  padding: 1.5rem;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+  transition: all 0.3s ease;
+}
+
+.agent-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, 
+    transparent 0%, 
+    var(--continental-gold) 50%, 
+    transparent 100%);
+}
+
+.agent-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 40px rgba(212, 175, 55, 0.2);
+  border-color: var(--continental-gold);
+}
+
+.agent-avatar {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  border: 2px solid var(--continental-gold);
+  margin: 0 auto 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 2rem;
+  background: var(--gunmetal);
+}
+
+.agent-status {
+  display: inline-block;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  margin-left: 8px;
+  animation: pulse 2s infinite;
+}
+
+.agent-status.active {
+  background: var(--success);
+  box-shadow: 0 0 10px var(--success);
+}
+
+.agent-status.busy {
+  background: var(--warning);
+}
+
+.agent-status.idle {
+  background: #95A5A6;
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.5; }
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   THE LEDGER - Financial Visualizer
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+.ledger-panel {
+  background: var(--obsidian);
+  border: 1px solid var(--continental-gold-dark);
+  border-radius: 12px;
+  padding: 2rem;
+  position: relative;
+}
+
+.ledger-panel::after {
+  content: '🜲';
+  position: absolute;
+  bottom: 1rem;
+  right: 1rem;
+  font-size: 3rem;
+  opacity: 0.1;
+  color: var(--continental-gold);
+}
+
+.coin-flow {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 1rem;
+  background: linear-gradient(90deg, 
+    rgba(39, 174, 96, 0.1) 0%, 
+    transparent 100%);
+  border-left: 3px solid var(--success);
+  margin-bottom: 0.5rem;
+}
+
+.coin-flow::before {
+  content: '🪙';
+  font-size: 1.5rem;
+  animation: coinDrop 0.5s ease;
+}
+
+@keyframes coinDrop {
+  0% { transform: translateY(-20px); opacity: 0; }
+  100% { transform: translateY(0); opacity: 1; }
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   CHAT INTERFACE - The Concierge
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+.chat-container {
+  background: linear-gradient(180deg, 
+    var(--gunmetal) 0%, 
+    var(--obsidian) 100%);
+  border: 1px solid var(--continental-gold);
+  border-radius: 16px;
+  overflow: hidden;
+}
+
+.chat-header {
+  background: linear-gradient(90deg, 
+    var(--continental-gold-dark) 0%, 
+    var(--continental-gold) 50%, 
+    var(--continental-gold-dark) 100%);
+  color: var(--obsidian);
+  padding: 1rem 1.5rem;
+  font-family: var(--font-display);
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.chat-header::before {
+  content: '🏨';
+}
+
+.chat-messages {
+  padding: 1.5rem;
+  max-height: 500px;
+  overflow-y: auto;
+  background-image: 
+    radial-gradient(circle at 20% 50%, rgba(212, 175, 55, 0.03) 0%, transparent 50%),
+    radial-gradient(circle at 80% 50%, rgba(212, 175, 55, 0.03) 0%, transparent 50%);
+}
+
+.message {
+  margin-bottom: 1rem;
+  max-width: 80%;
+  animation: messageSlide 0.3s ease;
+}
+
+@keyframes messageSlide {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.message.user {
+  margin-left: auto;
+  text-align: right;
+}
+
+.message-bubble {
+  display: inline-block;
+  padding: 0.75rem 1rem;
+  border-radius: 12px;
+  position: relative;
+}
+
+.message.user .message-bubble {
+  background: var(--ivory);
+  color: var(--gunmetal);
+  border: 1px solid var(--continental-gold);
+  border-bottom-right-radius: 4px;
+}
+
+.message.agent .message-bubble {
+  background: var(--gunmetal-light);
+  color: var(--ivory);
+  border: 1px solid var(--continental-gold-dark);
+  border-bottom-left-radius: 4px;
+}
+
+.message.agent .message-bubble::before {
+  content: attr(data-agent-avatar);
+  position: absolute;
+  left: -2.5rem;
+  top: 0.5rem;
+  font-size: 1.5rem;
+}
+
+.typing-indicator {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: var(--continental-gold);
+  font-style: italic;
+  padding: 0.5rem 1rem;
+}
+
+.typing-indicator::after {
+  content: '';
+  display: inline-flex;
+  gap: 4px;
+}
+
+.typing-indicator span {
+  width: 8px;
+  height: 8px;
+  background: var(--continental-gold);
+  border-radius: 50%;
+  animation: typingBounce 1.4s infinite ease-in-out;
+}
+
+.typing-indicator span:nth-child(2) { animation-delay: 0.2s; }
+.typing-indicator span:nth-child(3) { animation-delay: 0.4s; }
+
+@keyframes typingBounce {
+  0%, 80%, 100% { transform: scale(0.6); }
+  40% { transform: scale(1); }
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   BUTTONS & CONTROLS
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+.btn-continental {
+  background: linear-gradient(145deg, 
+    var(--continental-gold) 0%, 
+    var(--continental-gold-dark) 100%);
+  color: var(--obsidian);
+  border: none;
+  padding: 0.75rem 2rem;
+  font-family: var(--font-display);
+  font-weight: 600;
+  border-radius: 4px;
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+  transition: all 0.3s ease;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.btn-continental::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, 
+    transparent 0%, 
+    rgba(255,255,255,0.3) 50%, 
+    transparent 100%);
+  transition: left 0.5s ease;
+}
+
+.btn-continental:hover::before {
+  left: 100%;
+}
+
+.btn-continental:hover {
+  box-shadow: 0 0 20px rgba(212, 175, 55, 0.4);
+  transform: translateY(-2px);
+}
+
+.btn-continental.danger {
+  background: linear-gradient(145deg, 
+    var(--blood-oath-light) 0%, 
+    var(--blood-oath) 100%);
+  color: var(--ivory);
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   DECISION VOTING ANIMATION
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+.voting-panel {
+  background: var(--obsidian);
+  border: 2px solid var(--continental-gold);
+  border-radius: 12px;
+  padding: 2rem;
+  text-align: center;
+}
+
+.vote-avatar {
+  display: inline-block;
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  border: 2px solid var(--gunmetal);
+  margin: 0 0.5rem;
+  opacity: 0.5;
+  transition: all 0.5s ease;
+}
+
+.vote-avatar.voted {
+  border-color: var(--continental-gold);
+  opacity: 1;
+  box-shadow: 0 0 20px rgba(212, 175, 55, 0.5);
+  animation: votePulse 0.5s ease;
+}
+
+@keyframes votePulse {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.2); }
+  100% { transform: scale(1); }
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   LOADING & STATUS STATES
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+.loading-gold {
+  display: inline-block;
+  width: 40px;
+  height: 40px;
+  border: 3px solid var(--gunmetal);
+  border-top-color: var(--continental-gold);
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+.seal-stamp {
+  display: inline-block;
+  padding: 0.5rem 1rem;
+  border: 2px solid var(--blood-oath);
+  color: var(--blood-oath);
+  font-family: var(--font-display);
+  font-weight: bold;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  position: relative;
+  transform: rotate(-5deg);
+  opacity: 0;
+  animation: stamp 0.3s ease forwards;
+}
+
+@keyframes stamp {
+  0% { opacity: 0; transform: rotate(-5deg) scale(1.5); }
+  100% { opacity: 1; transform: rotate(-5deg) scale(1); }
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   RESPONSIVE
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+@media (max-width: 1024px) {
+  .council-chamber {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+@media (max-width: 768px) {
+  .council-chamber {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  
+  .agent-card {
+    padding: 1rem;
+  }
+  
+  .agent-avatar {
+    width: 60px;
+    height: 60px;
+    font-size: 1.5rem;
+  }
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   UTILITIES
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+.text-gold { color: var(--continental-gold); }
+.text-blood { color: var(--blood-oath); }
+.bg-obsidian { background-color: var(--obsidian); }
+.border-gold { border-color: var(--continental-gold); }
+
+.font-display { font-family: var(--font-display); }
+.font-mono { font-family: var(--font-mono); }
+
+.glow-gold {
+  text-shadow: 0 0 10px rgba(212, 175, 55, 0.5);
+}
+
+/* Quote styling */
+.quote-box {
+  border-left: 3px solid var(--continental-gold);
+  padding-left: 1rem;
+  font-style: italic;
+  color: var(--continental-gold-light);
+  margin: 1rem 0;
+}
