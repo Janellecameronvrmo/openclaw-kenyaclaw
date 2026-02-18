@@ -17,36 +17,18 @@ models:
 
 agents:
   definitions:
-    # Executive Leadership (The Inner Circle)
-    - ./agents/winston.yml          # CEO - Strategic leadership
-    - ./agents/john-wick.yml        # CTO - Technical execution
-    - ./agents/adjudicator.yml      # CFO - Financial oversight
-    
-    # Operations (The Service)
-    - ./agents/charon.yml           # CCO - Customer experience
-    - ./agents/doctor.yml           # COO - System health
-    - ./agents/harbourmaster.yml    # CDO - Digital/Platform
-    - ./agents/operator.yml         # CCO - Compliance/Legal
-    
-    # Growth (The Streets)
-    - ./agents/bowery-king.yml      # CMO - Marketing/Growth
-    - ./agents/sofia.yml            # CRO - Sales/Revenue
-    
-    # Wisdom (The High Table)
-    - ./agents/elder.yml            # Advisor - Strategy/Wisdom
+    # KenyaClaw Customer Support (NOT Continental)
+    - ./agents/support-lead.yml     # Customer Support Lead
+    - ./agents/tech-guide.yml       # Technical Setup Guide
   
-  # Council Configuration
-  council:
-    enabled: true
-    quorum: 2
-    votingTimeout: 300000
-    
-    # Decision thresholds
-    autonomy:
-      fullAuto: 100      # <$100: automatic
-      supervised: 1000   # $100-$1K: notify
-      advisory: 10000    # $1K-$10K: recommend
-      strategic: 100000  # >$10K: require approval
+  # 
+  # ⚠️  IMPORTANT: KenyaClaw customer instances do NOT have The Continental
+  # 
+  # The 10-agent High Table (Winston, John Wick, Adjudicator, etc.) 
+  # is STRICTLY PRIVATE and INTERNAL to KenyaClaw operations.
+  # 
+  # Customer-facing instances only get generic support agents.
+  # Never expose Continental agents, configurations, or themes to customers.
     
     # Special roles
     chairman: winston

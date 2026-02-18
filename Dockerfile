@@ -1,49 +1,68 @@
-# KenyaClaw - Customer OpenClaw Instance
-# Multi-tenant AI assistant for African businesses
+# ═══════════════════════════════════════════════════════════════════════════
+# KENYACLAW - Customer Instance Dockerfile
+# Continental for Everyone - 3 Customer Personas
+# ═══════════════════════════════════════════════════════════════════════════
 
-FROM node:22-alpine
+FROM node:20-alpine AS base
 
 # Install dependencies
-RUN apk add --no-cache \
-    git \
-    curl \
-    python3 \
-    make \
-    g++ \
-    libc6-compat
+RUN apk add --no-cache curl ca-certificates
 
-# Set working directory
+# Create app directory
 WORKDIR /app
 
-# Clone OpenClaw upstream
-ARG OPENCLAW_VERSION=main
-RUN git clone --depth 1 --branch ${OPENCLAW_VERSION} https://github.com/openclaw/openclaw.git . 2>/dev/null || \
-    (echo "Using local source" && mkdir -p /app)
+# ═══════════════════════════════════════════════════════════════════════════
+# Dependencies Stage
+# ═══════════════════════════════════════════════════════════════════════════
+FROM base AS dependencies
 
-# Copy OpenClaw source (fallback)
-COPY ./src/ /app/ 2>/dev/null || true
+COPY package*.json ./
 
-# Install dependencies
-RUN npm install -g pnpm && \
-    pnpm install --frozen-lockfile 2>/dev/null || pnpm install
+# Install production dependencies
+RUN npm ci --only=production && npm cache clean --force
 
-# Build OpenClaw
-RUN pnpm build
+# ═══════════════════════════════════════════════════════════════════════════
+# Build Stage
+# ═══════════════════════════════════════════════════════════════════════════
+FROM base AS build
 
-# Copy KenyaClaw customizations
-COPY ./agents/ /app/agents/
-COPY ./skills/ /app/skills/
-COPY ./config.yml /app/config.yml
+COPY package*.json ./
+RUN npm ci
 
-# Create memory directories for multi-tenancy
-RUN mkdir -p /memory/customers /sessions
+COPY . .
+
+# ═══════════════════════════════════════════════════════════════════════════
+# Production Stage
+# ═══════════════════════════════════════════════════════════════════════════
+FROM base AS production
+
+# Create non-root user
+RUN addgroup -g 1001 -S nodejs && \
+    adduser -S nodejs -u 1001
+
+# Copy production dependencies
+COPY --from=dependencies /app/node_modules ./node_modules
+
+# Copy built application
+COPY --from=build /app/src ./src
+COPY --from=build /app/agents ./agents
+COPY --from=build /app/ui ./ui
+COPY --from=build /app/config.yml ./
+COPY --from=build /app/package*.json ./
+
+# Create directories for data and logs
+RUN mkdir -p /app/data /app/logs && \
+    chown -R nodejs:nodejs /app
+
+# Switch to non-root user
+USER nodejs
+
+# Expose port
+EXPOSE 3001
 
 # Health check
-HEALTHCHECK --interval=30s --timeout=10s --start-period=60s --retries=3 \
-    CMD curl -f http://localhost:3003/health || exit 1
+HEALTHCHECK --interval=30s --timeout=10s --start-period=40s --retries=3 \
+    CMD curl -f http://localhost:3001/health || exit 1
 
-# Expose gateway port
-EXPOSE 3003
-
-# Run OpenClaw with our config
-CMD ["pnpm", "start", "--config", "/app/config.yml"]
+# Start command
+CMD ["node", "src/index.js"]
